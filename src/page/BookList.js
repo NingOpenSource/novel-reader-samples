@@ -152,7 +152,7 @@ export default class BookList extends Component {
                         primaryText={item.title}
                         secondaryTextLines={2}
                         secondaryText={
-                            <p style={{ fontSize: 1.2 }}>
+                            <p className="App-text-small">
                                 <span style={{ color: "#0077ff", paddingRight: 2 }}>{item.author}</span>|<span style={{ paddingLeft: 2 }}>{config.renderNumber(item.latelyFollower) + "人气"}</span>
                                 <br />
                                 {item.shortIntro}
@@ -212,7 +212,7 @@ export default class BookList extends Component {
                 __items.push(
                     <ListItem
                         key={_gender + "_" + i}
-                        primaryText={<span style={{ fontSize: 1.1 }}>{item}</span>}
+                        primaryText={<span className="App-text-small">{item}</span>}
                         onClick={(event) => {
                             this._requestParams.gender = _gender;
                             this._requestParams.major = _major;
@@ -240,7 +240,7 @@ export default class BookList extends Component {
                     __items.push(
                         <ListItem
                             key={index + "_" + i}
-                            primaryText={<span style={{ fontSize: 1.3 }}>{item.major}</span>}
+                            primaryText={<span className="App-text-small">{item.major}</span>}
                             onClick={(event) => {
                                 this._requestParams.gender = _gender;
                                 if (this._requestParams.major !== item.major) {
@@ -292,7 +292,7 @@ export default class BookList extends Component {
         return (
             <div>
                 <Subheader key="0"><h3>分类筛选</h3></Subheader>
-                <List style={{ fontSize: 1.2 }} className="App-layout-list">
+                <List className="App-layout-list">
                     {itemRender(this.state.api_subCategories)}
                 </List>
             </div>
