@@ -1,0 +1,78 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.App-footer{
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.App-layout-list{
+  overflow-y: auto;
+  width: 100%;
+}
+
+.App-layout{
+  display: flex;
+  background-color: #eeeeee;
+  flex-direction: column;
+}
+
+
+.App-layout-content{
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow-y: auto;
+}
+
+.App-cover-inner{
+  width: 4rem;
+  height: 5rem;
+  border: 1px solid #ebebeb;
+  background-position: 50%;
+  background-size: 100%;
+  overflow: hidden;
+}
+
+body{
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+a:active {
+  text-decoration: none;
+}
