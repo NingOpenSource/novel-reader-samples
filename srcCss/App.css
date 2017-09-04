@@ -30,6 +30,7 @@
 
 .App-layout-list{
   width: 100%;
+  overflow-y: hidden;
 }
 
 .App-layout{
@@ -41,10 +42,12 @@
 
 .App-layout-content{
   flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  overflow-y: auto;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* justify-content: space-around; */
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch;/**兼容ios设备,允许独立的滚动区域和触摸回弹*/ 
+  
 }
 
 .App-cover-inner{
