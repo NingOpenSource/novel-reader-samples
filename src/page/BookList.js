@@ -163,14 +163,7 @@ export default class BookList extends Component {
             return _items;
         };
         return (
-            <List className="App-layout-list"
-                onScroll={(event) => {
-                    if (event.target.scrollHeight - event.target.scrollTop == event.target.clientHeight
-                        && !this._isLoadingBooks) {
-                        this._isLoadingBooks = true;
-                        this._requestNextBooks();
-                    }
-                }}>
+            <List className="App-layout-list">
                 {itemRender()}
             </List>
         );
@@ -325,7 +318,14 @@ export default class BookList extends Component {
                         </Drawer>
                     </Paper>
 
-                    <div className="App-layout-content">
+                    <div className="App-layout-content"
+                        onScroll={(event) => {
+                            if (event.target.scrollHeight - event.target.scrollTop == event.target.clientHeight
+                                && !this._isLoadingBooks) {
+                                this._isLoadingBooks = true;
+                                this._requestNextBooks();
+                            }
+                        }}>
                         {this._renderBooks()}
 
                     </div>
