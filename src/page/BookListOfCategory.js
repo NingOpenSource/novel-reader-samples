@@ -8,63 +8,77 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
-    Drawer, RefreshIndicator, Divider, Subheader, List, ListItem, AppBar, MuiThemeProvider, FontIcon, BottomNavigation, BottomNavigationItem, Paper, Avatar
+    IconButton, MenuItem, IconMenu, Drawer, RefreshIndicator, Divider, Subheader, List, ListItem, AppBar, MuiThemeProvider, FontIcon, BottomNavigation, BottomNavigationItem, Paper, Avatar
 } from 'material-ui'
 import { Link, BrowserRouter, Route } from 'react-router-dom'
-import ToolButtons from '../view/ToolButtons'
-
+import ActionSearch from 'material-ui/svg-icons/action/search'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+var _tempData = null;
 /**
  * 
  */
-export default class BookList extends Component {
-    
+export default class BookListOfCategory extends Component {
+
     constructor(props) {
         super(props);
-        this._RefreshIndicatorStatus = {
-            ready: "ready",
-            loading: "loading",
-            hide: "hide"
+        if (_tempData !== null)
+            console.log(window.location.href)
+        if (_tempData !== null) {
+            /**
+             * 防止数据重置
+             */
+            this.state = _tempData.state;
+            this._count = _tempData._count;
+            this._isLoadingBooks = _tempData._isLoadingBooks;
+            this._requestParams = _tempData._requestParams;
+
+            console.error("-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-==")
+            console.log(this.state)
+        } else {
+            const qs = querystring.parse(window.location.search.replace("?", ""))
+            this.state = {
+                title: "书籍列表",
+                books: [],
+                gender: qs.gender,
+                minor: qs.minor,
+                major: qs.major,
+                refreshIndicatorStatus: config.refreshIndicatorStatus.hide,
+                drawerOpen: false,
+                api_subCategories: {}
+            }
+            this._requestParams = {
+                gender: this.state.gender,
+                type: "hot",
+                major: this.state.major,
+                minor: this.state.minor,
+                start: 0,
+                limit: 20
+            };
+            /**
+             * 书籍总量
+             */
+            this._count = -1;
+            /**
+             * 是否正在加载数据
+             */
+            this._isLoadingBooks = false;
         }
-        const qs = querystring.parse(window.location.search.replace("?", ""))
-        this.state = {
-            title: "书籍列表",
-            books: [],
-            gender: qs.gender,
-            minor: qs.minor,
-            major: qs.major,
-            refreshIndicatorStatus: this._RefreshIndicatorStatus.hide,
-            drawerOpen: false,
-            api_subCategories: {}
-        }
-        this._requestParams = {
-            gender: this.state.gender,
-            type: "hot",
-            major: this.state.major,
-            minor: this.state.minor,
-            start: 0,
-            limit: 20
-        };
-        /**
-         * 书籍总量
-         */
-        this._count = -1;
-        /**
-         * 是否正在加载数据
-         */
-        this._isLoadingBooks = false;
     }
     componentDidMount() {
-        switch (this.props.match.params.type) {
-            case "rank": {
-                console.log(this.state.requestParams)
-            } break;
-            case "category": {
-                this._refreshTitle();
-                this._requestNextBooks();
-            } break;
+        if (this.state.books.length == 0) {
+            this._refreshTitle();
+            this._requestNextBooks();
         }
     }
-
+    componentWillUnmount() {
+        _tempData = {
+            state: this.state,
+            _count: this._count,
+            _isLoadingBooks: this._isLoadingBooks,
+            _requestParams: this._requestParams,
+            _window_location_href: window.location.href
+        };
+    }
     _refreshTitle() {
         if (this._requestParams.major === undefined && this._requestParams.minor !== undefined) {
             this.setState({
@@ -87,7 +101,7 @@ export default class BookList extends Component {
         var _d = this._requestParams.start * this._requestParams.limit - this.state.books.length;
         if (this._count == -1 || this._count > this.state.books.length) {
             this.setState({
-                refreshIndicatorStatus: this._RefreshIndicatorStatus.loading
+                refreshIndicatorStatus: config.refreshIndicatorStatus.loading
             });
             /**
              * 加载下一页
@@ -113,12 +127,12 @@ export default class BookList extends Component {
                         })
                     }
                     this.setState({
-                        refreshIndicatorStatus: this._RefreshIndicatorStatus.hide
+                        refreshIndicatorStatus: config.refreshIndicatorStatus.hide
                     });
                     this._isLoadingBooks = false;
                 }).catch(e => {
                     this.setState({
-                        refreshIndicatorStatus: this._RefreshIndicatorStatus.hide
+                        refreshIndicatorStatus: config.refreshIndicatorStatus.hide
                     });
                 })
         } else {
@@ -126,7 +140,7 @@ export default class BookList extends Component {
              * 已经加载完毕
              */
             this.setState({
-                refreshIndicatorStatus: this._RefreshIndicatorStatus.hide
+                refreshIndicatorStatus: config.refreshIndicatorStatus.hide
             });
             alert("已经加载到最后一页");
         }
@@ -153,7 +167,7 @@ export default class BookList extends Component {
                 // console.log(item)
                 _items.push(<Link
                     key={i}
-                    to={"/"}
+                    to={"/books/detail"}
                 ><ListItem
                         leftAvatar={<Avatar size={50} backgroundColor={"#ffffff"} src={config.hostUriRes + "agent/" + item.cover} />}
                         primaryText={item.title}
@@ -305,7 +319,20 @@ export default class BookList extends Component {
                     height: document.documentElement.clientHeight
                 }} className="App-layout">
                     <Paper zDepth={1}><AppBar ref="e_header" title={this.state.title}
-                    iconElementRight={<ToolButtons/>}
+                        iconElementRight={<div><Link to={"/books/search"}><IconButton><ActionSearch color="#ffffff" /></IconButton></Link>
+                            <IconMenu
+                                iconButtonElement={
+                                    <IconButton><MoreVertIcon color="#ffffff" />
+                                    </IconButton>}
+                                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+                                <MenuItem primaryText="刷新" onClick={(e) => {
+                                    this._refreshTitle();
+                                    this._refreshBooks();
+                                }} />
+                                <MenuItem primaryText="帮助" />
+                                <MenuItem primaryText="Github" /></IconMenu>
+                        </div>}
                         onLeftIconButtonTouchTap={(event) => {
                             this.setState({
                                 drawerOpen: !this.state.drawerOpen

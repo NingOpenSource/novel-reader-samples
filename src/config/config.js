@@ -15,4 +15,9 @@ var renderNumber=(num)=>{
         return Math.ceil(num/10000.0*10)/10.0+"万";
     }
 }
-export default {hostUri,hostUriRes,renderNumber};
+var refreshIndicatorStatus = {
+    ready: "ready",
+    loading: "loading",
+    hide: "hide"
+}
+export default {hostUri,hostUriRes,renderNumber,refreshIndicatorStatus};

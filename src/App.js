@@ -8,9 +8,11 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
-    Divider, Subheader, List, ListItem, AppBar, MuiThemeProvider, FontIcon, BottomNavigation, BottomNavigationItem, Paper, Avatar
+    IconButton, MenuItem, IconMenu, Divider, Subheader, List, ListItem, AppBar, MuiThemeProvider, FontIcon, BottomNavigation, BottomNavigationItem, Paper, Avatar
 } from 'material-ui'
 import { Link, BrowserRouter, Route } from 'react-router-dom'
+import ActionSearch from 'material-ui/svg-icons/action/search'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 
 
@@ -174,12 +176,10 @@ class App extends Component {
                     // console.log(item)
                     __items.push(<Link
                         key={item._id}
-                        to={{
-                            pathname: "/books/rank?" + querystring.stringify({
-                                gender: _gender,
-                                ...item
-                            }),
-                        }}><ListItem
+                        to={"/books/rank?" + querystring.stringify({
+                            gender: _gender,
+                            ...item
+                        })}><ListItem
                             leftAvatar={<Avatar src={config.hostUriRes + item.cover} />}
                             primaryText={item.title}
                         /></Link>);
@@ -205,7 +205,23 @@ class App extends Component {
                 <div style={{
                     height: document.documentElement.clientHeight
                 }} className="App-layout">
-                    <Paper zDepth={1}><AppBar ref="e_header" title="novel-reader-samples" /></Paper>
+                    <Paper zDepth={1}><AppBar ref="e_header" title="NovelReader"
+                        iconElementRight={<div><Link to={"/books/search"}><IconButton><ActionSearch color="#ffffff" /></IconButton></Link>
+                            <IconMenu
+                                iconButtonElement={
+                                    <IconButton><MoreVertIcon color="#ffffff" />
+                                    </IconButton>}
+                                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+                                <MenuItem primaryText="刷新" onClick={(e) => {
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 300);
+                                }} />
+                                <MenuItem primaryText="帮助" />
+                                <MenuItem primaryText="Github" /></IconMenu>
+                        </div>}
+                    /></Paper>
                     <div className="App-layout-content">
                         {this._getCurrentPage()}
 
