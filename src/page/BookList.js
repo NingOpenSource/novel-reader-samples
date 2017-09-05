@@ -11,17 +11,20 @@ import {
     Drawer, RefreshIndicator, Divider, Subheader, List, ListItem, AppBar, MuiThemeProvider, FontIcon, BottomNavigation, BottomNavigationItem, Paper, Avatar
 } from 'material-ui'
 import { Link, BrowserRouter, Route } from 'react-router-dom'
+import ToolButtons from '../view/ToolButtons'
+
 /**
  * 
  */
 export default class BookList extends Component {
-    _RefreshIndicatorStatus = {
-        ready: "ready",
-        loading: "loading",
-        hide: "hide"
-    }
+    
     constructor(props) {
         super(props);
+        this._RefreshIndicatorStatus = {
+            ready: "ready",
+            loading: "loading",
+            hide: "hide"
+        }
         const qs = querystring.parse(window.location.search.replace("?", ""))
         this.state = {
             title: "书籍列表",
@@ -41,6 +44,14 @@ export default class BookList extends Component {
             start: 0,
             limit: 20
         };
+        /**
+         * 书籍总量
+         */
+        this._count = -1;
+        /**
+         * 是否正在加载数据
+         */
+        this._isLoadingBooks = false;
     }
     componentDidMount() {
         switch (this.props.match.params.type) {
@@ -54,10 +65,6 @@ export default class BookList extends Component {
         }
     }
 
-    /**
-     * 书籍总量
-     */
-    _count = -1;
     _refreshTitle() {
         if (this._requestParams.major === undefined && this._requestParams.minor !== undefined) {
             this.setState({
@@ -168,10 +175,6 @@ export default class BookList extends Component {
             </List>
         );
     }
-    /**
-     * 是否正在加载数据
-     */
-    _isLoadingBooks = false;
 
     /**
       * 请求分类信息
@@ -302,6 +305,7 @@ export default class BookList extends Component {
                     height: document.documentElement.clientHeight
                 }} className="App-layout">
                     <Paper zDepth={1}><AppBar ref="e_header" title={this.state.title}
+                    iconElementRight={<ToolButtons/>}
                         onLeftIconButtonTouchTap={(event) => {
                             this.setState({
                                 drawerOpen: !this.state.drawerOpen
